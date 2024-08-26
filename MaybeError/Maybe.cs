@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace MaybeError;
 
-public interface IMaybe<T, E> where T: class where E : Error
+public interface IMaybe<T, E> where E : Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	bool HasError { get; }
@@ -46,7 +46,7 @@ public interface IMaybe<T, E> where T: class where E : Error
 	}
 }
 
-public readonly struct Maybe<T, E> : IMaybe<T, E> where T : class where E: Error
+public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
@@ -101,7 +101,7 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where T : class where E: Error
 }
 
 
-public readonly struct Maybe<T> : IMaybe<T, Error> where T : class
+public readonly struct Maybe<T> : IMaybe<T, Error> 
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
