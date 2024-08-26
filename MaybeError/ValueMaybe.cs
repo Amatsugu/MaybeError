@@ -1,4 +1,6 @@
 ﻿
+using MaybeError.Errors;
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace MaybeError;
@@ -22,17 +24,26 @@ public readonly struct ValueMaybe<T, E> : IValueMaybe<T, E> where T : struct whe
 
 	private readonly T _value;
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T, E}"/> with a default value
+	/// </summary>
 	public ValueMaybe()
 	{
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T, E}"/> with a <paramref name="value"/>
+	/// </summary>
 	public ValueMaybe(T value)
 	{
 		_value = value;
 		HasError = false;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T, E}"/> with an error <paramref name="e"/>
+	/// </summary>
 	public ValueMaybe(E e)
 	{
 		Error = e;
@@ -68,17 +79,26 @@ public readonly struct ValueMaybe<T> : IValueMaybe<T, Error> where T : struct
 
 	private readonly T _value;
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T}"/> with a default value
+	/// </summary>
 	public ValueMaybe()
 	{
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T}"/> with a <paramref name="value"/>
+	/// </summary>
 	public ValueMaybe(T value)
 	{
 		_value = value;
 		HasError = false;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T}"/> with an exception <paramref name="e"/>
+	/// </summary>
 	public ValueMaybe(Exception e)
 	{
 		Error = new ExceptionError(e);
@@ -86,6 +106,9 @@ public readonly struct ValueMaybe<T> : IValueMaybe<T, Error> where T : struct
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="ValueMaybe{T}"/> with an error <paramref name="e"/>
+	/// </summary>
 	public ValueMaybe(Error e)
 	{
 		Error = e;

@@ -1,4 +1,5 @@
 using MaybeError;
+using MaybeError.Errors;
 
 namespace MaybeErrorTests;
 

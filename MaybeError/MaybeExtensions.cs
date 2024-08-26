@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿using MaybeError.Errors;
 
 namespace MaybeError;
 

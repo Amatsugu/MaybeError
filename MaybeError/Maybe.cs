@@ -1,4 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using MaybeError.Errors;
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace MaybeError;
 
@@ -48,23 +50,31 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where T : class where E: Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
-	public readonly bool HasValue { get; }
+	public readonly bool HasValue => !HasError;
 	public readonly E? Error { get; }
 	public readonly T Value => HasError ? throw Error.GetException() : _value!;
 
 	private readonly T? _value;
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, E}"/> with a default(null) value
+	/// </summary>
 	public Maybe()
 	{
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, E}"/> with a <paramref name="value"/>
+	/// </summary>
 	public Maybe(T value)
 	{
 		_value = value;
-		HasValue = true;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, E}"/> with an error <paramref name="e"/>
+	/// </summary>
 	public Maybe(E e)
 	{
 		Error = e;
@@ -95,23 +105,31 @@ public readonly struct Maybe<T> : IMaybe<T, Error> where T : class
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
-	public readonly bool HasValue { get; }
+	public readonly bool HasValue => !HasError;
 	public readonly Error? Error { get; }
 	public readonly T Value => HasError ? throw Error.GetException() : _value!;
 
 	private readonly T? _value;
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T}"/> with a default(null) value
+	/// </summary>
 	public Maybe()
 	{
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T}"/> with a <paramref name="value"/>
+	/// </summary>
 	public Maybe(T value)
 	{
 		_value = value;
-		HasValue = true;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T}"/> with an exception <paramref name="e"/>
+	/// </summary>
 	public Maybe(Exception e)
 	{
 		Error = new ExceptionError(e);
@@ -119,6 +137,9 @@ public readonly struct Maybe<T> : IMaybe<T, Error> where T : class
 		_value = default;
 	}
 
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T}"/> with an error <paramref name="e"/>
+	/// </summary>
 	public Maybe(Error e)
 	{
 		Error = e;
@@ -151,58 +172,3 @@ public readonly struct Maybe<T> : IMaybe<T, Error> where T : class
 	
 }
 
-public class Error(string message, string? details = null, string? debugDetails = null)
-{
-	public readonly string Message = message;
-	public readonly string? Details = details;
-	public readonly string? DebugDetails = debugDetails;
-
-	public virtual Exception GetException()
-	{
-		return new Exception(Message);
-	}
-
-	public override string ToString()
-	{
-		return $"{Message}\n{Details}\n{DebugDetails}";
-	}
-
-	public static implicit operator string(Error e)
-	{
-		return e.ToString();
-	}
-}
-
-public class ExceptionError : ExceptionError<Exception>
-{
-	public ExceptionError(string message, Exception exception) : base(message, exception)
-	{
-	}
-	public ExceptionError(Exception exception) : base(exception)
-	{
-	}
-}
-public class ExceptionError<T> : Error where T : Exception
-{
-	public T Exception { get; set; }
-
-	public ExceptionError(string message, T exception) : base(message, exception.Message, exception.StackTrace)
-	{
-		Exception = exception;
-	}
-
-	public ExceptionError(T exception) : base(exception.Message, debugDetails: exception.StackTrace)
-	{
-		Exception = exception;
-	}
-
-	public override T GetException()
-	{
-		return Exception;
-	}
-
-	public override string ToString()
-	{
-		return $"{Message}\n{Exception}";
-	}
-}
