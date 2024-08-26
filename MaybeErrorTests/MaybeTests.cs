@@ -31,15 +31,18 @@ public class MaybeTests
 	public void ImplicitValue()
 	{
 		Maybe<string> value = "Test";
-		Assert.IsTrue(value.HasValue);
-		Assert.That(value == "Test", Is.True);
+		Assert.Multiple(() =>
+		{
+			Assert.That(value.HasValue);
+			Assert.That(value == "Test", Is.True);
+		});
 	}
 
 	[Test]
 	public void ImplicitError()
 	{
 		Maybe<string> value = new InvalidOperationException();
-		Assert.IsTrue(value.HasError);
+		Assert.That(value.HasError);
 		Assert.Throws<InvalidOperationException>(() => value.Value.ToString());
 	}
 
@@ -47,7 +50,7 @@ public class MaybeTests
 	public void ExplicitError()
 	{
 		Maybe<string, ExceptionError> value = new ExceptionError(new InvalidOperationException());
-		Assert.IsTrue(value.HasError);
+		Assert.That(value.HasError);
 		Assert.Throws<InvalidOperationException>(() => value.Value.ToString());
 	}
 
@@ -56,8 +59,11 @@ public class MaybeTests
 	{
 		Maybe<string> value = new Error("Test Error");
 		Assert.Throws<Exception>(() => value.Value.ToLower());
-		Assert.That(value.HasError);
-		Assert.That(value.Error?.Message, Is.EqualTo("Test Error"));
+		Assert.Multiple(() =>
+		{
+			Assert.That(value.HasError);
+			Assert.That(value.Error?.Message, Is.EqualTo("Test Error"));
+		});
 	}
 
 	[Test]
