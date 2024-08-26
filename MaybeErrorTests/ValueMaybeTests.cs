@@ -30,6 +30,7 @@ public class ValueMaybeTests
 	public void ImplicitValue()
 	{
 		ValueMaybe<int> value = 1;
+		Assert.IsTrue(value.HasValue);
 		Assert.That(value == 1, Is.True);
 	}
 
@@ -37,6 +38,7 @@ public class ValueMaybeTests
 	public void ImplicitError()
 	{
 		ValueMaybe<int> value = new InvalidOperationException();
+		Assert.IsTrue(value.HasError);
 		Assert.Throws<InvalidOperationException>(() => value.Value.ToString());
 	}
 
@@ -44,6 +46,7 @@ public class ValueMaybeTests
 	public void ExplicitError()
 	{
 		ValueMaybe<int, ExceptionError> value = new ExceptionError(new InvalidOperationException());
+		Assert.IsTrue(value.HasError);
 		Assert.Throws<InvalidOperationException>(() => value.Value.ToString());
 	}
 
