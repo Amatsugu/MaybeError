@@ -9,10 +9,15 @@
 
 	<PropertyGroup>
 		<PackageId>MaybeError</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Amatsugu</Authors>
 		<PackageDescription>Errors as values</PackageDescription>
 		<RepositoryUrl>https://github.com/Amatsugu/MaybeError</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<None Include="../README.md" Pack="true" PackagePath="\"/>
+	</ItemGroup>
 </Project>
