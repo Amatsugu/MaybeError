@@ -8,7 +8,7 @@
 
 	<PropertyGroup>
 		<PackageId>MaybeError</PackageId>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 		<Authors>Amatsugu</Authors>
 		<PackageDescription>Errors as values</PackageDescription>
 		<RepositoryUrl>https://github.com/Amatsugu/MaybeError</RepositoryUrl>
