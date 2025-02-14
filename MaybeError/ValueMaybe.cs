@@ -9,6 +9,7 @@ public interface IValueMaybe<T, E> where T : struct where E : Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	bool HasError { get; }
+	[MemberNotNullWhen(false, nameof(Error))]
 	bool HasValue => !HasError;
 	E? Error { get; }
 	T Value { get; }
@@ -18,6 +19,7 @@ public readonly struct ValueMaybe<T, E> : IValueMaybe<T, E> where T : struct whe
 {
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
+	[MemberNotNullWhen(false, nameof(Error))]
 	public readonly bool HasValue => !HasError;
 	public readonly E? Error { get; }
 	public readonly T Value => HasError ? throw Error.GetException() : _value;
