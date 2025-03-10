@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,15 +19,23 @@ public class Error(string message, string? details = null, string? devDetails = 
 	public readonly string? Details = details;
 	public readonly string? DevDetails = devDetails;
 
+#if DEBUG
+	private readonly StackTrace _stackTrace = new();
+#endif
+
 	public virtual Exception GetException()
 	{
+#if DEBUG
+		return new Exception(ToString());
+#else
 		return new Exception(Message);
+#endif
 	}
 
 	public override string ToString()
 	{
 #if DEBUG
-		return $"{Message}\n{Details}\n{DevDetails}";
+		return $"{Message}\n{Details}\n{DevDetails}\nTrace:{_stackTrace}";
 #else
 		return $"{Message}\n{Details}";
 #endif
