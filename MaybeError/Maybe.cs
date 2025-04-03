@@ -51,7 +51,7 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 	[MemberNotNullWhen(true, nameof(Error))]
 	public readonly bool HasError { get; }
 	public readonly bool HasValue => !HasError;
-	public readonly E? Error { get; }
+	public readonly E? Error { get; init; }
 	public readonly T Value => HasError ? throw Error.GetException() : _value!;
 
 	private readonly T? _value;
@@ -82,6 +82,7 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 		_value = default;
 	}
 
+
 	public static implicit operator Maybe<T, E>(T value)
 	{
 		return new Maybe<T, E>(value);
@@ -91,6 +92,7 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 	{
 		return new Maybe<T, E>(e);
 	}
+
 
 	public static implicit operator T(Maybe<T, E> value)
 	{

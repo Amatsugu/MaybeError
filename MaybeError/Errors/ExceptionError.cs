@@ -33,4 +33,9 @@ public class ExceptionError<T> : Error where T : Exception
 	{
 		return $"{Message}\n{Exception}";
 	}
+
+	public static implicit operator ExceptionError<T>(T exception)
+	{
+		return new ExceptionError<T>(exception);
+	}
 }
