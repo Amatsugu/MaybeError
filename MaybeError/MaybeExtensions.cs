@@ -70,4 +70,5 @@ public static class MaybeExtensions
 			return defaultValue;
 		return predicate(maybe.Value);
 	}
+
 }
