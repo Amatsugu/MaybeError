@@ -46,6 +46,70 @@ public interface IMaybe<T, E> where E : Error
 	}
 }
 
+public readonly struct MaybeEx<T, Ex> : IMaybe<T, ExceptionError<Ex>> where Ex : Exception
+{
+	[MemberNotNullWhen(true, nameof(Error))]
+	public readonly bool HasError { get; }
+	public readonly bool HasValue => !HasError;
+	public readonly ExceptionError<Ex>? Error { get; init; }
+	public readonly T Value => HasError ? throw Error.GetException() : _value!;
+	private readonly T? _value;
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with a default(null) value
+	/// </summary>
+	public MaybeEx()
+	{
+		_value = default;
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with a <paramref name="value"/>
+	/// </summary>
+	public MaybeEx(T value)
+	{
+		_value = value;
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with an exception error <paramref name="e"/>
+	/// </summary>
+	public MaybeEx(Ex e)
+	{
+		Error = e;
+		HasError = true;
+		_value = default;
+	}
+
+
+	public static implicit operator MaybeEx<T, Ex>(T value)
+	{
+		return new MaybeEx<T, Ex>(value);
+	}
+
+	public static implicit operator MaybeEx<T, Ex>(Ex e)
+	{
+		return new MaybeEx<T, Ex>(e);
+	}
+
+	public static implicit operator Maybe<T, ExceptionError<Ex>>(MaybeEx<T, Ex> value)
+	{
+		return value;
+	}
+
+	public static implicit operator Maybe<T>(MaybeEx<T, Ex> value)
+	{
+		return value;
+	}
+
+	public static implicit operator T(MaybeEx<T, Ex> value)
+	{
+		if (value.HasError)
+			throw value.Error.GetException();
+		return value.Value;
+	}
+}
+
 public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
@@ -93,6 +157,10 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 		return new Maybe<T, E>(e);
 	}
 
+	public static implicit operator Maybe<T>(Maybe<T, E> value)
+	{
+		return value;
+	}
 
 	public static implicit operator T(Maybe<T, E> value)
 	{

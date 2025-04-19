@@ -63,6 +63,11 @@ public readonly struct ValueMaybe<T, E> : IValueMaybe<T, E> where T : struct whe
 		return new ValueMaybe<T, E>(e);
 	}
 
+	public static implicit operator ValueMaybe<T>(ValueMaybe<T, E> value)
+	{
+		return value;
+	}
+
 	public static implicit operator T(ValueMaybe<T, E> value)
 	{
 		if (value.HasError)
@@ -134,6 +139,71 @@ public readonly struct ValueMaybe<T> : IValueMaybe<T, Error> where T : struct
 	}
 
 	public static implicit operator T(ValueMaybe<T> value)
+	{
+		if (value.HasError)
+			throw value.Error.GetException();
+		return value.Value;
+	}
+}
+
+
+public readonly struct ValueMaybeEx<T, Ex> : IMaybe<T, ExceptionError<Ex>> where T: struct where Ex : Exception
+{
+	[MemberNotNullWhen(true, nameof(Error))]
+	public readonly bool HasError { get; }
+	public readonly bool HasValue => !HasError;
+	public readonly ExceptionError<Ex>? Error { get; init; }
+	public readonly T Value => HasError ? throw Error.GetException() : _value!;
+	private readonly T _value;
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with a default(null) value
+	/// </summary>
+	public ValueMaybeEx()
+	{
+		_value = default;
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with a <paramref name="value"/>
+	/// </summary>
+	public ValueMaybeEx(T value)
+	{
+		_value = value;
+	}
+
+	/// <summary>
+	/// Creates a new <see cref="Maybe{T, Ex}"/> with an exception error <paramref name="e"/>
+	/// </summary>
+	public ValueMaybeEx(Ex e)
+	{
+		Error = e;
+		HasError = true;
+		_value = default;
+	}
+
+
+	public static implicit operator ValueMaybeEx<T, Ex>(T value)
+	{
+		return new ValueMaybeEx<T, Ex>(value);
+	}
+
+	public static implicit operator ValueMaybeEx<T, Ex>(Ex e)
+	{
+		return new ValueMaybeEx<T, Ex>(e);
+	}
+
+	public static implicit operator ValueMaybe<T, ExceptionError<Ex>>(ValueMaybeEx<T, Ex> value)
+	{
+		return value;
+	}
+
+	public static implicit operator ValueMaybe<T>(ValueMaybeEx<T, Ex> value)
+	{
+		return value;
+	}
+
+	public static implicit operator T(ValueMaybeEx<T, Ex> value)
 	{
 		if (value.HasError)
 			throw value.Error.GetException();
