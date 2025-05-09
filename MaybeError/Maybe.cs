@@ -49,10 +49,11 @@ public interface IMaybe<T, E> where E : Error
 public readonly struct MaybeEx<T, Ex> : IMaybe<T, ExceptionError<Ex>> where Ex : Exception
 {
 	[MemberNotNullWhen(true, nameof(Error))]
+	[MemberNotNullWhen(false, nameof(_value))]
 	public readonly bool HasError { get; }
 	public readonly bool HasValue => !HasError;
 	public readonly ExceptionError<Ex>? Error { get; init; }
-	public readonly T Value => HasError ? throw Error.GetException() : _value!;
+	public readonly T Value => HasError ? throw Error.GetException() : _value;
 	private readonly T? _value;
 
 	/// <summary>
@@ -113,10 +114,11 @@ public readonly struct MaybeEx<T, Ex> : IMaybe<T, ExceptionError<Ex>> where Ex :
 public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 {
 	[MemberNotNullWhen(true, nameof(Error))]
+	[MemberNotNullWhen(false, nameof(_value))]
 	public readonly bool HasError { get; }
 	public readonly bool HasValue => !HasError;
 	public readonly E? Error { get; init; }
-	public readonly T Value => HasError ? throw Error.GetException() : _value!;
+	public readonly T Value => HasError ? throw Error.GetException() : _value;
 
 	private readonly T? _value;
 
@@ -174,10 +176,11 @@ public readonly struct Maybe<T, E> : IMaybe<T, E> where E: Error
 public readonly struct Maybe<T> : IMaybe<T, Error> 
 {
 	[MemberNotNullWhen(true, nameof(Error))]
+	[MemberNotNullWhen(false, nameof(_value))]
 	public readonly bool HasError { get; }
 	public readonly bool HasValue => !HasError;
 	public readonly Error? Error { get; }
-	public readonly T Value => HasError ? throw Error.GetException() : _value!;
+	public readonly T Value => HasError ? throw Error.GetException() : _value;
 
 	private readonly T? _value;
 
